@@ -1,11 +1,13 @@
 import { TaskProps } from "../App";
+import TaskItem from "./TaskItem";
 
 interface TaskListProps {
   tasks: TaskProps[];
   deleteTask: (id: string) => void;
+  updateTask: (id: string, name: string) => void;
 }
 
-function TaskList({ tasks, deleteTask }: TaskListProps) {
+function TaskList({ tasks, deleteTask, updateTask }: TaskListProps) {
   return (
     <ul>
       {tasks.map((task, index) => (
@@ -18,13 +20,12 @@ function TaskList({ tasks, deleteTask }: TaskListProps) {
             marginBottom: "5px",
           }}
         >
-          <li>{task.name}</li>
-          <button
-            style={{ backgroundColor: "red" }}
-            onClick={() => deleteTask(task.id)}
-          >
-            Eliminar
-          </button>
+          <TaskItem
+            key={task.id}
+            task={task}
+            deleteTask={deleteTask}
+            updateTask={updateTask}
+          />
         </div>
       ))}
     </ul>

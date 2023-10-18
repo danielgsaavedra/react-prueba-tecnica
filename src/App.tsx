@@ -1,7 +1,8 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
 import TaskList from "./components/TaskList";
 import Task from "./components/Task";
 import "./App.css";
+import TaskFiltered from "./components/TaskFiltered";
 
 export interface TaskProps {
   id: string;
@@ -9,8 +10,9 @@ export interface TaskProps {
 }
 
 function App() {
-  const [currentTask, setCurrentTask] = useState<TaskProps[]>([]);
+  const [task, setTask] = useState<TaskProps[]>([]);
   const [error, setError] = useState("");
+  const [filter, setFilter] = useState("");
 
   const createTask = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -18,26 +20,45 @@ function App() {
     const formData = new FormData(form);
     const data = formData.get("task") as string;
     if (data.trim() === "") {
-      setError("El campo no puede estar vacio");
+      setError("Debes ingresar una tarea");
     }
     if (data) {
-      setCurrentTask([...currentTask, { id: crypto.randomUUID(), name: data }]);
+      setTask([...task, { id: crypto.randomUUID(), name: data }]);
       setError("");
     }
     form.reset();
   };
 
   const deleteTask = (id: string) => {
-    const newTask = currentTask.filter((task) => task.id !== id);
-    setCurrentTask(newTask);
+    const newTask = task.filter((task) => task.id !== id);
+    setTask(newTask);
+  };
+
+  const filterTask = useMemo(() => {
+    return task.filter((task) => task.name.includes(filter));
+  }, [filter, task]);
+
+  const updateTask = (id: string, name: string) => {
+    const newTask = task.map((task) => {
+      if (task.id === id) {
+        task.name = name;
+      }
+      return task;
+    });
+    setTask(newTask);
   };
 
   return (
     <>
       <h1>Prueba Técnica</h1>
       <main>
+        <TaskFiltered filter={filter} setFilter={setFilter} />
         <Task createTask={createTask} error={error} />
-        <TaskList tasks={currentTask} deleteTask={deleteTask} />
+        <TaskList
+          tasks={filterTask}
+          deleteTask={deleteTask}
+          updateTask={updateTask}
+        />
       </main>
     </>
   );

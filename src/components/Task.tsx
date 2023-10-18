@@ -5,16 +5,15 @@ interface TaskProps {
 
 function Task({ createTask, error }: TaskProps) {
   return (
-    <form style={{ marginBottom: "5rem" }} onSubmit={createTask}>
+    <form style={{ marginBottom: "3rem" }} onSubmit={createTask}>
       <div
         style={{
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          marginBottom: "5px",
         }}
       >
-        <input type="text" placeholder="Task" name="task" />
+        <input type="text" placeholder="Ingresa un tarea" name="task" />
         <button type="submit">Agregar</button>
       </div>
       <p style={{ color: "red" }}>{error !== "" && error}</p>
